@@ -8,6 +8,20 @@ h1 {
     text-align: center;
 }
 
+.container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.left-column {
+    flex: 1;
+}
+
+.right-column {
+    flex: 1;
+}
+
 input {
     margin-bottom: 15px;
     padding: 10px;
@@ -37,6 +51,16 @@ tr:hover {
     cursor: pointer;
 }
 
+.chart-container {
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+canvas {
+    width: 100% !important;
+    height: 300px !important;
+}
+
 .modal {
     display: none;
     position: fixed;
@@ -61,14 +85,4 @@ tr:hover {
     float: right;
     cursor: pointer;
     font-size: 22px;
-}
-.chart-container {
-    width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
-}
-
-canvas {
-    width: 100% !important;
-    height: 300px !important;
 }

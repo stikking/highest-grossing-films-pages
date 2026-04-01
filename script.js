@@ -5,7 +5,7 @@ fetch("./data/films.json")
     .then(data => {
         data.sort((a, b) => b.box_office - a.box_office)
         filmsData = data
-        renderTable(data)
+        render(data)
         renderCharts(data)
     })
 
@@ -13,7 +13,7 @@ function formatMoney(value) {
     return "$" + value.toLocaleString()
 }
 
-function renderTable(data) {
+function render(data) {
     const tbody = document.getElementById("tableBody")
     tbody.innerHTML = ""
 
@@ -34,7 +34,7 @@ function renderTable(data) {
 document.getElementById("search").addEventListener("input", (e) => {
     const value = e.target.value.toLowerCase()
     const filtered = filmsData.filter(f => f.title.toLowerCase().includes(value))
-    renderTable(filtered)
+    render(filtered)
 })
 
 function openModal(film, rank) {
@@ -61,14 +61,14 @@ function renderCharts(data) {
     const counts = {}
     const revenue = {}
 
-    data.forEach(film => {
-        counts[film.release_year] = (counts[film.release_year] || 0) + 1
-        revenue[film.release_year] = (revenue[film.release_year] || 0) + film.box_office
+    data.forEach(f => {
+        counts[f.release_year] = (counts[f.release_year] || 0) + 1
+        revenue[f.release_year] = (revenue[f.release_year] || 0) + f.box_office
     })
 
-    const labels = Object.keys(counts).sort((a, b) => a - b)
-    const countValues = labels.map(year => counts[year])
-    const revenueValues = labels.map(year => revenue[year])
+    const labels = Object.keys(counts).sort((a,b) => a-b)
+    const countsValues = labels.map(y => counts[y])
+    const revenueValues = labels.map(y => revenue[y])
 
     const ctx1 = document.getElementById('filmsChart').getContext('2d')
     new Chart(ctx1, {
@@ -77,11 +77,14 @@ function renderCharts(data) {
             labels: labels,
             datasets: [{
                 label: 'Number of Top Films',
-                data: countValues,
+                data: countsValues,
                 backgroundColor: 'rgba(54, 162, 235, 0.7)'
             }]
         },
-        options: { responsive: true, scales: { y: { beginAtZero: true, stepSize: 1 } } }
+        options: {
+            responsive: true,
+            scales: { y: { beginAtZero: true, stepSize: 1 } }
+        }
     })
 
     const ctx2 = document.getElementById('revenueChart').getContext('2d')
@@ -97,12 +100,7 @@ function renderCharts(data) {
         },
         options: {
             responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { callback: value => "$" + value.toLocaleString() }
-                }
-            }
+            scales: { y: { beginAtZero: true } }
         }
     })
 }

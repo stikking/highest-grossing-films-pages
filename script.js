@@ -1,6 +1,6 @@
 let filmsData = []
 
-fetch("films.json")
+fetch("data/films.json")
     .then(res => res.json())
     .then(data => {
         data.sort((a, b) => b.box_office - a.box_office)

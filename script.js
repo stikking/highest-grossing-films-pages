@@ -69,39 +69,18 @@ function renderCharts(data) {
     const labels = Object.keys(counts).sort((a,b) => a-b)
     const countsValues = labels.map(y => counts[y])
     const revenueValues = labels.map(y => revenue[y])
+    const avgValues = labels.map(y => revenue[y]/counts[y])
 
-    const ctx1 = document.getElementById('filmsChart').getContext('2d')
-    new Chart(ctx1, {
+    new Chart(document.getElementById('filmsChart').getContext('2d'), {
         type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Number of Top Films',
-                data: countsValues,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: { y: { beginAtZero: true, stepSize: 1 } }
-        }
+        data: { labels, datasets: [{ label: 'Number of Top Films', data: countsValues, backgroundColor: 'rgba(54, 162, 235, 0.7)' }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true, stepSize: 1 } } }
     })
 
-    const ctx2 = document.getElementById('revenueChart').getContext('2d')
-    new Chart(ctx2, {
+    new Chart(document.getElementById('revenueChart').getContext('2d'), {
         type: 'bar',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Total Box Office ($)',
-                data: revenueValues,
-                backgroundColor: 'rgba(255, 99, 132, 0.7)'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: { y: { beginAtZero: true } }
-        }
+        data: { labels, datasets: [{ label: 'Total Box Office ($)', data: revenueValues, backgroundColor: 'rgba(255, 99, 132, 0.7)' }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
     })
 
     const avgCanvas = document.createElement('canvas')
@@ -111,7 +90,7 @@ function renderCharts(data) {
     new Chart(avgCanvas.getContext('2d'), {
         type: 'line',
         data: {
-            labels: labels,
+            labels,
             datasets: [{ 
                 label: 'Average Box Office per Film ($)', 
                 data: avgValues, 
@@ -122,5 +101,4 @@ function renderCharts(data) {
         },
         options: { responsive: true, scales: { y: { beginAtZero: true } } }
     })
-}
 }

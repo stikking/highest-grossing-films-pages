@@ -103,4 +103,24 @@ function renderCharts(data) {
             scales: { y: { beginAtZero: true } }
         }
     })
+
+    const avgCanvas = document.createElement('canvas')
+    avgCanvas.id = 'avgChart'
+    document.querySelector('.right-column').appendChild(avgCanvas)
+
+    new Chart(avgCanvas.getContext('2d'), {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{ 
+                label: 'Average Box Office per Film ($)', 
+                data: avgValues, 
+                borderColor: 'rgba(75, 192, 192, 1)', 
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.3
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    })
+}
 }

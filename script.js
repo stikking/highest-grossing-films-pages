@@ -5,25 +5,20 @@ fetch("./data/films.json")
     .then(data => {
         data.sort((a, b) => b.box_office - a.box_office)
         filmsData = data
-        render(data)
-        renderChart(data)
+        renderTable(data)
+        renderCharts(data)
     })
 
 function formatMoney(value) {
     return "$" + value.toLocaleString()
 }
 
-function getFlag(country) {
-    return country
-}
-
-function render(data) {
+function renderTable(data) {
     const tbody = document.getElementById("tableBody")
     tbody.innerHTML = ""
 
     data.forEach((film, index) => {
         const row = document.createElement("tr")
-
         row.innerHTML = `
             <td>${film.title}</td>
             <td>${film.release_year}</td>
@@ -31,9 +26,7 @@ function render(data) {
             <td>${formatMoney(film.box_office)}</td>
             <td>${film.country}</td>
         `
-
         row.addEventListener("click", () => openModal(film, index + 1))
-
         tbody.appendChild(row)
     })
 }
@@ -41,12 +34,11 @@ function render(data) {
 document.getElementById("search").addEventListener("input", (e) => {
     const value = e.target.value.toLowerCase()
     const filtered = filmsData.filter(f => f.title.toLowerCase().includes(value))
-    render(filtered)
+    renderTable(filtered)
 })
 
 function openModal(film, rank) {
     document.getElementById("modal").style.display = "block"
-
     document.getElementById("modalTitle").innerText = film.title
     document.getElementById("modalRank").innerText = "#" + rank
     document.getElementById("modalYear").innerText = film.release_year
@@ -65,25 +57,42 @@ window.onclick = (e) => {
     }
 }
 
-function renderChart(data) {
+function renderCharts(data) {
     const counts = {}
+    const revenue = {}
 
     data.forEach(film => {
         counts[film.release_year] = (counts[film.release_year] || 0) + 1
+        revenue[film.release_year] = (revenue[film.release_year] || 0) + film.box_office
     })
 
     const labels = Object.keys(counts).sort((a, b) => a - b)
-    const values = labels.map(year => counts[year])
+    const countValues = labels.map(year => counts[year])
+    const revenueValues = labels.map(year => revenue[year])
 
-    const ctx = document.getElementById('filmsChart').getContext('2d')
-    new Chart(ctx, {
+    const ctx1 = document.getElementById('filmsChart').getContext('2d')
+    new Chart(ctx1, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
                 label: 'Number of Top Films',
-                data: values,
+                data: countValues,
                 backgroundColor: 'rgba(54, 162, 235, 0.7)'
+            }]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true, stepSize: 1 } } }
+    })
+
+    const ctx2 = document.getElementById('revenueChart').getContext('2d')
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Box Office ($)',
+                data: revenueValues,
+                backgroundColor: 'rgba(255, 99, 132, 0.7)'
             }]
         },
         options: {
@@ -91,7 +100,7 @@ function renderChart(data) {
             scales: {
                 y: {
                     beginAtZero: true,
-                    stepSize: 1
+                    ticks: { callback: value => "$" + value.toLocaleString() }
                 }
             }
         }
